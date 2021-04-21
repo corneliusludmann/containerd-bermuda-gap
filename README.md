@@ -4,8 +4,8 @@
 
 ```
 docker-compose up -d registry
-docker pull alpine
-docker tag alpine localhost:5000/alpine:latest
-docker push localhost:5000/alpine:latest
+docker pull gitpod/workspace-full
+docker tag gitpod/workspace-full localhost:5000/workspace-full:latest
+docker push localhost:5000/workspace-full:latest
 docker-compose down
 ```
