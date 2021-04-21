@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  containerd:
+    image: containerd
+    build:
+      context: ./containerd
+      # args:
+      #   VERSION: 1.2.10
+    volumes:
+      - run-containerd:/run/containerd/
+  client:
+    image: client
+    build:
+      context: ./client
+    volumes:
+      - run-containerd:/run/containerd/
+
+volumes:
+  run-containerd:
+    driver: local
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+      # o: "size=256m,uid=1000"
