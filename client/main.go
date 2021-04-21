@@ -3,12 +3,14 @@ package main
 import (
 	"context"
 	"log"
+	"time"
 
 	"github.com/containerd/containerd"
 	"github.com/containerd/containerd/namespaces"
 )
 
 func main() {
+	time.Sleep(10 * time.Second)
 	if err := pullImage("docker.io/library/alpine:latest"); err != nil {
 		log.Fatal(err)
 	}

@@ -2,17 +2,19 @@ version: "3"
 
 services:
   containerd:
-    image: containerd
     build:
       context: ./containerd
       # args:
       #   VERSION: 1.2.10
+    image: containerd
+    privileged: true
     volumes:
       - run-containerd:/run/containerd/
   client:
-    image: client
     build:
       context: ./client
+    image: client
+    privileged: true
     volumes:
       - run-containerd:/run/containerd/
 
