@@ -8,9 +8,10 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 ARG VERSION=1.2.10
-RUN curl -sSOL https://github.com/containerd/containerd/releases/download/v${VERSION}/containerd-${VERSION}.linux-amd64.tar.gz && \
-    tar -xvzf containerd-${VERSION}.linux-amd64.tar.gz
+ARG DELIM=.
+RUN curl -sSOL https://github.com/containerd/containerd/releases/download/v${VERSION}/containerd-${VERSION}${DELIM}linux-amd64.tar.gz && \
+    tar -xvzf containerd-${VERSION}${DELIM}linux-amd64.tar.gz
 
-COPY containerd-config.toml /etc/containerd/config.toml
+# COPY containerd-config.toml /etc/containerd/config.toml
 
 ENTRYPOINT [ "containerd" ]
