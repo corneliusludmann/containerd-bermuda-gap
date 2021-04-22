@@ -73,9 +73,11 @@ func pullImage(ctx context.Context, ref string, i int) error {
 		// without native snapshotter I'm able to pull alpine but not workspace-full
 		// error: failed to extract layer [...] failed to mount /var/lib/containerd/tmpmounts/containerd-mount366656299: invalid argument: unknown
 		// see also: https://github.com/containerd/containerd/issues/2402#issuecomment-398033418
-		image, err = client.Pull(ctx2, ref, containerd.WithPullUnpack, containerd.WithPullSnapshotter("native"), containerd.WithResolver(PLAIN_HTTP_RESOLVER))
+		//image, err = client.Pull(ctx2, ref, containerd.WithPullUnpack, containerd.WithPullSnapshotter("native"), containerd.WithResolver(PLAIN_HTTP_RESOLVER))
+        image, err = client.Pull(ctx2, ref, containerd.WithPullUnpack, containerd.WithResolver(PLAIN_HTTP_RESOLVER))
 	} else {
-		image, err = client.Pull(ctx2, ref, containerd.WithPullUnpack, containerd.WithPullSnapshotter("native"))
+		//image, err = client.Pull(ctx2, ref, containerd.WithPullUnpack, containerd.WithPullSnapshotter("native"))
+        image, err = client.Pull(ctx2, ref, containerd.WithPullUnpack)
 	}
 	if err != nil {
 		return err
