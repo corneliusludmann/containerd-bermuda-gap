@@ -2,10 +2,12 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 
 	"time"
 
@@ -34,21 +36,30 @@ func main() {
 	}
 	log.Printf("Starting using image '%s', max='%d' ...\n", ref, max)
 
+	var wg sync.WaitGroup
+
 	i := 0
 	for {
-		if err := pullImage(context.Background(), ref); err != nil {
-			log.Fatal(err)
-		}
+		wg.Add(1)
+		go func(i int) {
+			log.Printf("Pulling %d ...\n", i)
+			defer wg.Done()
+			if err := pullImage(context.Background(), ref, i); err != nil {
+				log.Fatal(err)
+			}
+		}(i)
 		i++
 		if i == max {
 			break
 		}
 		time.Sleep(1 * time.Second)
 	}
+	wg.Wait()
 	log.Println("Done.")
 }
 
-func pullImage(ctx context.Context, ref string) error {
+func pullImage(ctx context.Context, ref string, i int) error {
+	defer timeTrack(time.Now(), fmt.Sprintf("Pulling %d", i))
 	client, err := containerd.New("/run/containerd/containerd.sock")
 	if err != nil {
 		return err
@@ -69,7 +80,12 @@ func pullImage(ctx context.Context, ref string) error {
 	if err != nil {
 		return err
 	}
-	log.Printf("Successfully pulled '%s' image.\n", image.Name())
+	log.Printf("Successfully pulled '%s' image (%d).\n", image.Name(), i)
 
 	return nil
+}
+
+func timeTrack(start time.Time, name string) {
+	elapsed := time.Since(start)
+	log.Printf("%s took %s.", name, elapsed)
 }
