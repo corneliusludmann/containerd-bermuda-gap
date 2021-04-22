@@ -7,7 +7,6 @@ cd /
 apt update -y
 apt install -y \
     gcc
-#    #golang-go
 
 mkdir -p /root/go/src/gitpod.io
 mv /home/vagrant/workdir/client /root/go/src/gitpod.io/
