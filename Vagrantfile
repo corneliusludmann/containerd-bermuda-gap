@@ -8,6 +8,6 @@ Vagrant.configure("2") do |config|
         v.cpus = 2
     end
 
-    config.vm.provision "file", source: "File.dirname(__FILE__)", destination: "$HOME/workdir"
-    config.vm.provision "shell", path: path: "#{vagrant_assets}/provision.sh", privileged: true
+    config.vm.provision "file", source: "#{File.dirname(__FILE__)}", destination: "$HOME/workdir"
+    config.vm.provision "shell", path: "#{vagrant_assets}/provision.sh", privileged: true
 end
