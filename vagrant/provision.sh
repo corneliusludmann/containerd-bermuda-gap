@@ -31,6 +31,11 @@ curl -sSLo /etc/docker/registry/config.yml https://raw.githubusercontent.com/doc
 curl -sSLo /usr/local/bin/registry https://raw.githubusercontent.com/docker/distribution-library-image/ab00e8dae12d4515ed259015eab771ec92e92dd4/amd64/registry
 chmod +x /usr/local/bin/registry
 
+# cpuburn
+curl -sSOL https://cdn.pmylund.com/files/tools/cpuburn/linux/cpuburn-1.0-amd64.tar.gz
+tar -xvzf cpuburn-1.0-amd64.tar.gz
+mv cpuburn/cpuburn /usr/local/bin/
+
 # start containerd and registry
 containerd >/home/vagrant/logs/containerd.log 2>&1 &
 registry serve /etc/docker/registry/config.yml >/home/vagrant/logs/registry.log 2>&1 &

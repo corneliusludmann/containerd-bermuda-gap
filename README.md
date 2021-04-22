@@ -16,6 +16,7 @@ docker-compose down
 $ vagrant plugin install vagrant-disksize
 $ mkdir -p logs
 $ vagrant destroy -f && vagrant up
+$ vagrant snapshot save init --force    # optional
 $ vagrant ssh
-$ /root/go/bin/containerd-test-client localhost:5000/workspace-full:latest 10 2>&1 | tee /home/vagrant/logs/client.log
+$ sudo /root/go/bin/containerd-test-client localhost:5000/workspace-full:latest 10 2>&1 | tee /home/vagrant/logs/client.log
 ```
