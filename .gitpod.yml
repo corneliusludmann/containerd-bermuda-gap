@@ -1,0 +1,13 @@
+tasks:
+  - name: docker-up
+    before: sudo docker-up
+  - name: docker
+    before: echo 'Waiting for docker daemon to start' && until docker info &> /dev/null; do sleep 1; done;
+    init: |
+      docker-compose build
+      
+
+
+ports:
+  - port: 5000
+    onOpen: ignore
