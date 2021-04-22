@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 
 	"time"
@@ -23,14 +24,28 @@ func main() {
 	if len(os.Args) > 1 {
 		ref = os.Args[1]
 	}
-	log.Printf("Starting using image '%s' ...\n", ref)
+	max := -1
+	if len(os.Args) > 2 {
+		i, err := strconv.Atoi(os.Args[2])
+		if err != nil {
+			log.Fatal(err)
+		}
+		max = i
+	}
+	log.Printf("Starting using image '%s', max='%d' ...\n", ref, max)
 
+	i := 0
 	for {
 		if err := pullImage(context.Background(), ref); err != nil {
 			log.Fatal(err)
 		}
+		i++
+		if i == max {
+			break
+		}
 		time.Sleep(1 * time.Second)
 	}
+	log.Println("Done.")
 }
 
 func pullImage(ctx context.Context, ref string) error {
@@ -44,9 +59,12 @@ func pullImage(ctx context.Context, ref string) error {
 
 	var image containerd.Image
 	if strings.HasPrefix(ref, "registry:5000") {
-		image, err = client.Pull(ctx2, ref, containerd.WithPullUnpack, containerd.WithResolver(PLAIN_HTTP_RESOLVER))
+		// without native snapshotter I'm able to pull alpine but not workspace-full
+		// error: failed to extract layer [...] failed to mount /var/lib/containerd/tmpmounts/containerd-mount366656299: invalid argument: unknown
+		// see also: https://github.com/containerd/containerd/issues/2402#issuecomment-398033418
+		image, err = client.Pull(ctx2, ref, containerd.WithPullUnpack, containerd.WithPullSnapshotter("native"), containerd.WithResolver(PLAIN_HTTP_RESOLVER))
 	} else {
-		image, err = client.Pull(ctx2, ref, containerd.WithPullUnpack)
+		image, err = client.Pull(ctx2, ref, containerd.WithPullUnpack, containerd.WithPullSnapshotter("native"))
 	}
 	if err != nil {
 		return err

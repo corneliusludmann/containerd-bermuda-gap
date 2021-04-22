@@ -20,7 +20,8 @@ services:
     build:
       context: ./client
     image: client
-    command: "registry:5000/workspace-full:latest"
+    command: [ "registry:5000/workspace-full:latest", "1"]
+    # command: "registry:5000/alpine:latest"
     volumes:
       - run-containerd:/run/containerd/
 

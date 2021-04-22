@@ -2,11 +2,23 @@ tasks:
   - name: docker-up
     before: sudo docker-up
   - name: docker
-    before: echo 'Waiting for docker daemon to start' && until docker info &> /dev/null; do sleep 1; done;
+    before: echo 'Waiting for the docker daemon to start' && until docker info &> /dev/null; do sleep 1; done;
     init: |
       docker-compose build
-      
-
+      docker-compose pull
+      docker-compose up -d registry
+      docker pull alpine
+      docker tag alpine localhost:5000/alpine:latest
+      docker push localhost:5000/alpine:latest
+      docker pull gitpod/workspace-full
+      docker tag gitpod/workspace-full localhost:5000/workspace-full:latest
+      docker push localhost:5000/workspace-full:latest
+      docker-compose down
+      sudo mv ./registry /home/gitpod/registry
+    command: |
+      mkdir -p /home/gitpod/registry
+      ln -s /home/gitpod/registry
+      docker-compose up
 
 ports:
   - port: 5000
