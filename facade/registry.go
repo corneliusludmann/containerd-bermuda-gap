@@ -109,7 +109,7 @@ type dispatchFunc func(ctx context.Context, r *http.Request) http.Handler
 func dispatcher(d dispatchFunc) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fc, _ := httputil.DumpRequest(r, false)
-		log.Printf("dispatching request: %s", string(fc))
+		log.Printf("dispatching request: %s\nvars: %v", string(fc), mux.Vars(r))
 
 		// Get context from request, add vars and other info and sync back
 		ctx := r.Context()

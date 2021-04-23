@@ -11,7 +11,7 @@ Vagrant.configure("2") do |config|
         v.memory = 1024
         v.cpus = 1
     end
-    config.disksize.size = "80GB"
+    config.disksize.size = "200GB"
 
     config.vm.synced_folder "#{logs_dir}", "/home/vagrant/logs"
     config.vm.synced_folder "#{facade_dir}", "/home/vagrant/facade"
