@@ -1,5 +1,6 @@
 vagrant_assets = File.dirname(__FILE__) + "/vagrant"
 client_dir = File.dirname(__FILE__) + "/client"
+facade_dir = File.dirname(__FILE__) + "/facade"
 registry_data = File.dirname(__FILE__) + "/registry"
 logs_dir = File.dirname(__FILE__) + "/logs"
 
@@ -15,6 +16,7 @@ Vagrant.configure("2") do |config|
     config.vm.synced_folder "#{logs_dir}", "/home/vagrant/logs"
 
     config.vm.provision "file", source: "#{client_dir}", destination: "/home/vagrant/workdir/client"
+    config.vm.synced_folder "#{facade_dir}", "/home/vagrant/workdir/facade"
     config.vm.provision "file", source: "#{registry_data}", destination: "/home/vagrant/registry"
     config.vm.provision "shell", path: "#{vagrant_assets}/provision.sh", privileged: true
 end
