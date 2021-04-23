@@ -14,9 +14,9 @@ Vagrant.configure("2") do |config|
     config.disksize.size = "80GB"
 
     config.vm.synced_folder "#{logs_dir}", "/home/vagrant/logs"
+    config.vm.synced_folder "#{facade_dir}", "/home/vagrant/facade"
 
     config.vm.provision "file", source: "#{client_dir}", destination: "/home/vagrant/workdir/client"
-    config.vm.synced_folder "#{facade_dir}", "/home/vagrant/workdir/facade"
     config.vm.provision "file", source: "#{registry_data}", destination: "/home/vagrant/registry"
     config.vm.provision "shell", path: "#{vagrant_assets}/provision.sh", privileged: true
 end
