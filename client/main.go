@@ -36,15 +36,27 @@ func main() {
 	}
 	log.Printf("Starting using image '%s', max='%d' ...\n", ref, max)
 
+	client, err := containerd.New("/run/containerd/containerd.sock")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer client.Close()
+
 	var wg sync.WaitGroup
 
 	i := 0
 	for {
 		wg.Add(1)
 		go func(i int) {
-			log.Printf("Pulling %d ...\n", i)
+
 			defer wg.Done()
-			if err := pullImage(context.Background(), ref, i); err != nil {
+			if max > 1 && i > (max/2) {
+				delay := 30 * time.Second
+				log.Printf("Sleeping %s until pulling %d ...\n", delay, i)
+				time.Sleep(delay)
+			}
+			log.Printf("Pulling %d ...\n", i)
+			if err := pullImage(context.Background(), client, ref, i); err != nil {
 				log.Fatal(err)
 			}
 		}(i)
@@ -58,15 +70,11 @@ func main() {
 	log.Println("Done.")
 }
 
-func pullImage(ctx context.Context, ref string, i int) error {
+func pullImage(ctx context.Context, client *containerd.Client, ref string, i int) error {
 	defer timeTrack(time.Now(), fmt.Sprintf("Pulling %d", i))
-	client, err := containerd.New("/run/containerd/containerd.sock")
-	if err != nil {
-		return err
-	}
-	defer client.Close()
 
 	ctx2 := namespaces.WithNamespace(ctx, "client")
+	var err error = nil
 
 	var image containerd.Image
 	if strings.HasPrefix(ref, "registry:5000") {

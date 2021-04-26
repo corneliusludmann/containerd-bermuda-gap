@@ -16,7 +16,7 @@ require (
 	github.com/bugsnag/panicwrap v0.0.0-20151223152923-e2c28503fcd0 // indirect
 	github.com/containerd/btrfs v0.0.0-20210316141732-918d888fb676 // indirect
 	github.com/containerd/cgroups v0.0.0-20210114181951-8a68de567b68 // indirect
-	github.com/containerd/containerd v1.4.4 // indirect
+	github.com/containerd/containerd v1.4.4
 	github.com/containerd/continuity v0.1.0 // indirect
 	github.com/containerd/fifo v1.0.0 // indirect
 	github.com/containerd/go-cni v1.0.1 // indirect
