@@ -9,7 +9,8 @@ apt install -y \
     gcc
 
 mkdir -p /root/go/src/gitpod.io
-mv /home/vagrant/workdir/client /root/go/src/gitpod.io/
+cp -r /home/vagrant/client /root/go/src/gitpod.io/
+cp -r /home/vagrant/facade /root/go/src/gitpod.io/
 mv /home/vagrant/registry /var/lib/registry
 mkdir -p /etc/docker/registry
 
@@ -36,13 +37,21 @@ curl -sSOL https://cdn.pmylund.com/files/tools/cpuburn/linux/cpuburn-1.0-amd64.t
 tar -xvzf cpuburn-1.0-amd64.tar.gz
 mv cpuburn/cpuburn /usr/local/bin/
 
-# start containerd and registry
-containerd >/home/vagrant/logs/containerd.log 2>&1 &
-registry serve /etc/docker/registry/config.yml >/home/vagrant/logs/registry.log 2>&1 &
-
 # build client
 cd /root/go/src/gitpod.io/client
 go get -v ./...
 go install -v ./...
+
+# build facade
+cd /root/go/src/gitpod.io/facade
+go get -v ./...
+go install -v ./...
+
 export PATH=$PATH:/root/go/bin
+
+# start containerd, registry, and facade
+containerd >/home/vagrant/logs/containerd.log 2>&1 &
+registry serve /etc/docker/registry/config.yml >/home/vagrant/logs/registry.log 2>&1 &
+/root/go/bin/facade >/home/vagrant/logs/facade.log 2>&1 &
+
 # containerd-test-client localhost:5000/workspace-full:latest 10 2>&1 | tee /home/vagrant/logs/client.log
